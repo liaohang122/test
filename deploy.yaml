@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-mgmt-deployment
+spec:
+  selector:
+    matchLabels:
+      app: user
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user
+        image: 172.24.195.235:5000/user-mgmt:1.0
+        ports:
+        - containerPort: 8067
+          hostPort:  
+        volumeMounts:
+        - mountPath: "/usr/app/log"
+          name: user-log        
+      volumes:
+      - name: user-log
+        hostPath:
+          path: "/tmp/lhtest/userlog"
