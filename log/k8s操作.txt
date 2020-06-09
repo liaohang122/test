@@ -1,0 +1,8 @@
+≤Èø¥node label
+kubectl get nodes --show-labels
+‘O÷√node label
+kubectl label nodes {nodeName} {labelName}={labelValue}
+÷ÿ÷√node label
+kubectl label nodes {nodeName} {labelName}={labelValue} --overwrite
+Ñh≥˝node label
+kubectl label nodes {nodeName} {labelName}-
