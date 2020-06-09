@@ -12,15 +12,26 @@ spec:
       labels:
         app: user
     spec:
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        app: user-mgmt
       containers:
       - name: user
-        image: 172.24.195.235:5000/user-mgmt:1.0
+        image: 172.24.195.235:5000/lh/user-mgmt:1.0
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh","-c","echo \"pod start\" >> /usr/app/log/lifecycle.log"]
+          preStop:
+            exec:
+              command: ["/bin/sh","-c","echo \"pod stop\" >> /usr/app/log/lifecycle.log"]
         ports:
         - containerPort: 8067
-          hostPort:  
+          hostPort:
         volumeMounts:
         - mountPath: "/usr/app/log"
-          name: user-log        
+          name: user-log
       volumes:
       - name: user-log
         hostPath:
