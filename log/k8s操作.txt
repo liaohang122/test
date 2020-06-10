@@ -7,6 +7,7 @@ kubectl label nodes {nodeName} {labelName}={labelValue} --overwrite
 „h³ýnode label
 kubectl label nodes {nodeName} {labelName}-
 
+kubectl set image deployment/user-mgmt-deployment user=172.24.195.235:5000/user-mgmt:2.0
 
 apiVersion: apps/v1
 kind: Deployment
