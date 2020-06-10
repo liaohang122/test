@@ -6,3 +6,29 @@ kubectl label nodes {nodeName} {labelName}={labelValue}
 kubectl label nodes {nodeName} {labelName}={labelValue} --overwrite
 „h³ýnode label
 kubectl label nodes {nodeName} {labelName}-
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-mgmt-deployment
+spec:
+  selector:
+    matchLabels:
+      app: user
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      nodeSelector:
+        app: user-mgmt
+      containers:
+      - name: user
+        image: 172.24.195.235:5000/user-mgmt:1.0
