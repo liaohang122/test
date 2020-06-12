@@ -1,6 +1,41 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: lhstateservice
+spec:
+  ports:
+  - port: 8899
+    targetPort: 8067
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: user
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: user-mgmt-deployment
+spec:
+  serviceName: "lhstateservice"
+  selector:
+    matchLabels:
+      app: user
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user-container
+        image: 172.24.195.235:5000/user-mgmt-statefulset:1.0
+        ports:
+        - containerPort: 8067
+
+
+apiVersion: v1
+kind: Service
+metadata:
   name: myservice
 spec:
   ports:
