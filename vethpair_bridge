@@ -1,0 +1,36 @@
+#!/bin/bash
+
+brctl addbr br0
+ifconfig br0 10.0.1.254/24 up
+
+ip netns add ns01
+ip link add veth01 type veth peer name veth0101
+ip link set veth0101 netns ns01
+ip netns exec ns01 ifconfig veth0101 10.0.1.1/24 up
+brctl addif br0 veth01
+ip link set veth01 up
+
+
+ip netns add ns02
+ip link add veth02 type veth peer name veth0202
+ip link set veth0202 netns ns02
+ip netns exec ns02 ifconfig veth0202 10.0.1.2/24 up
+brctl addif br0 veth02
+ip link set veth02 up
+
+
+
+ping -c 3 10.0.1.1
+ping -c 3 10.0.1.2
+
+ip netns exec ns01 ip a
+#ip netns exec ns01 ping -c 3 10.0.1.2
+
+ip netns exec ns02 ip a
+#ip netns exec ns02 ping -c 3 10.0.1.1
+
+#ip netns exec ns01 route add -net 172.31.224.0  netmask 255.255.224.0 dev veth0101
+#ip netns exec ns02 route add -net 172.31.224.0  netmask 255.255.224.0 dev veth0202
+
+ip netns exec ns01 route add default gw 10.0.1.254
+ip netns exec ns02 route add default gw 10.0.1.254
